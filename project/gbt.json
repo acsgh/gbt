@@ -1,0 +1,13 @@
+{
+  "name": "DummyProject",
+  "version": "1.0",
+  "go": "1.7.4",
+  "dependencies": {
+    "dev": [
+
+    ],
+    "prod":[
+
+    ]
+  }
+}
