@@ -8,6 +8,8 @@ import (
 	"time"
 )
 
+var recursive = true
+
 func replaceChars(input string, replaceBy string, values ...string) string {
 	result := input
 
@@ -160,10 +162,6 @@ func logTime(taskName string, task func()) {
 }
 
 func getBaseDir() string {
-	if directory != "" {
-		return directory
-	} else {
-		path, _ := filepath.Abs(filepath.Dir("."))
-		return path
-	}
+	path, _ := filepath.Abs(filepath.Dir("."))
+	return path
 }
