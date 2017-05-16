@@ -5,25 +5,16 @@ import (
 	"github.com/albertoteloko/gbt/file"
 	"flag"
 	"os"
-	//"strings"
+	pd "github.com/albertoteloko/gbt/project-definition"
+	gi "github.com/albertoteloko/gbt/go-interface"
 )
 
 var version string
 
-var goInterface GoInterface = GoInterfaceFileSystem{}
-var projectDefinitionLoader ProjectDefinitionLoader = ProjectDefinitionLoaderFileSystem{}
+var goInterface gi.GoInterface = gi.GoInterfaceFileSystem{}
+var projectDefinitionLoader pd.ProjectDefinitionLoader = pd.ProjectDefinitionLoaderFileSystem{}
 
 var debug bool
-
-var (
-	HOME_PATH         = os.Getenv("HOME")
-	GBT_PATH          = HOME_PATH + "/.gbt"
-	GO_DISTRO_PATH    = GBT_PATH + "/go"
-	GBT_DISTROS_PATH  = GBT_PATH + "/gbt"
-	DEPENDENCIES_PATH = GBT_PATH + "/dep"
-	TMP_PATH          = GBT_PATH + "/tmp"
-	GO_PATH           = os.Getenv("GOPATH")
-)
 
 var clean bool
 var build bool
@@ -44,12 +35,12 @@ func main() {
 	log.Debug("GUT %s", version)
 	initTool()
 
-	var definition, err = projectDefinitionLoader.load()
+	var definition, err = projectDefinitionLoader.Load()
 
 	if err != nil {
 		log.Error("Unable to load project definition: %v", err)
 	} else {
-		var validationErrors = definition.validate()
+		var validationErrors = definition.Validate()
 
 		if len(validationErrors) > 0 {
 			log.Error("There are %v validation error in gbt.json", len(validationErrors))
@@ -90,11 +81,11 @@ func main() {
 }
 func initTool() {
 	//os.RemoveAll(BIN_FOLDER)
-	os.MkdirAll(GBT_PATH, 0775)
-	os.MkdirAll(GO_DISTRO_PATH, 0775)
-	os.MkdirAll(GBT_DISTROS_PATH, 0775)
-	os.MkdirAll(DEPENDENCIES_PATH, 0775)
-	os.MkdirAll(TMP_PATH, 0775)
+	os.MkdirAll(file.GBT_PATH, 0775)
+	os.MkdirAll(file.GO_DISTRO_PATH, 0775)
+	os.MkdirAll(file.GBT_DISTROS_PATH, 0775)
+	os.MkdirAll(file.DEPENDENCIES_PATH, 0775)
+	os.MkdirAll(file.TMP_PATH, 0775)
 }
 
 func loadFlags() {
@@ -111,16 +102,16 @@ func loadFlags() {
 	flag.Parse()
 }
 
-func run(definition ProjectDefinition) {
+func run(definition pd.ProjectDefinition) {
 	log.Info("%v %v", definition.Name, definition.Version)
-	var err = goInterface.checkAndDownloadGo(definition)
+	var err = goInterface.CheckAndDownloadGo(definition)
 	if err != nil {
 		log.Error("Unable to load go version: %v", err)
 	}
 }
 
 func processFolder(folder string) {
-	folderName := file.GetFolderName(GO_PATH  + "/src/", folder)
+	folderName := getFolderName(folder)
 
 	if (format || all) && file.IsGoFolder(folder) {
 		log.LogTime("Format "+folderName, func() {

@@ -7,6 +7,16 @@ import (
 	"io/ioutil"
 )
 
+var (
+	HOME_PATH         = os.Getenv("HOME")
+	GBT_PATH          = HOME_PATH + "/.gbt"
+	GO_DISTRO_PATH    = GBT_PATH + "/go"
+	GBT_DISTROS_PATH  = GBT_PATH + "/gbt"
+	DEPENDENCIES_PATH = GBT_PATH + "/dep"
+	TMP_PATH          = GBT_PATH + "/tmp"
+	GO_PATH           = os.Getenv("GOPATH")
+)
+
 func And(f1, f2 func(string) bool) func(string) bool {
 	return func(file string) bool {
 		return f1(file) && f2(file)

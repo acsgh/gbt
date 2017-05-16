@@ -44,7 +44,7 @@ func buildTask(folder string) bool {
 }
 
 func buildFolder(folder string) (string, error) {
-	command := exec.Command("go", "build", "-o", GO_PATH+"/bin/"+getSourceFolderName(folder), folder)
+	command := exec.Command("go", "build", "-o", file.GO_PATH+"/bin/"+getSourceFolderName(folder), folder)
 	bytes, err := command.Output()
 	return string(bytes), err
 }
@@ -173,5 +173,5 @@ func benchmarkFolder(folder string) ([]benchmarkResult, error) {
 }
 
 func getFolderName(folder string) string {
-	return file.GetFolderName(GO_PATH+"/src/", folder)
+	return file.GetFolderName(file.GO_PATH+"/src/", folder)
 }

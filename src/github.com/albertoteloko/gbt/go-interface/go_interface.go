@@ -1,21 +1,22 @@
-package main
+package go_interface
 
 import (
 	"github.com/albertoteloko/gbt/log"
 	"github.com/albertoteloko/gbt/file"
+	pd "github.com/albertoteloko/gbt/project-definition"
 )
 
 const GO_URL_BASE = "https://storage.googleapis.com/golang"
 
 type GoInterface interface {
-	checkAndDownloadGo(projectDefinition ProjectDefinition) error
+	CheckAndDownloadGo(projectDefinition pd.ProjectDefinition) error
 }
 
 type GoInterfaceFileSystem struct {
 }
 
-func (goInterface GoInterfaceFileSystem) checkAndDownloadGo(projectDefinition ProjectDefinition) error {
-	var goFolder = HOME_PATH + "/.gbt/go/" + projectDefinition.Version
+func (goInterface GoInterfaceFileSystem) CheckAndDownloadGo(projectDefinition pd.ProjectDefinition) error {
+	var goFolder = file.HOME_PATH + "/.gbt/go/" + projectDefinition.Version
 	log.Debug("Go Folder: %v", goFolder)
 
 	var err = testGoInstallation(goFolder)
@@ -36,7 +37,7 @@ func (goInterface GoInterfaceFileSystem) checkAndDownloadGo(projectDefinition Pr
 func downloadGoInstallation(goVersion string, goFolder string) error {
 	var goUrl = getGoUrl(goVersion)
 	log.Info(goUrl)
-	return file.DownloadUrl(goUrl, TMP_PATH+"/"+getGoFile(goVersion))
+	return file.DownloadUrl(goUrl, file.TMP_PATH+"/"+getGoFile(goVersion))
 }
 
 func getGoUrl(goVersion string) string {

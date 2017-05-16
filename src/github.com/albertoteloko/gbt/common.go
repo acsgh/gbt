@@ -1,11 +1,8 @@
 package main
 
 import (
-	"github.com/albertoteloko/gbt/log"
-	"io/ioutil"
 	"path/filepath"
 	"strings"
-	"time"
 )
 
 var recursive = true

@@ -1,12 +1,6 @@
-package main
+package project_definition
 
-import (
-	"encoding/json"
-	"io/ioutil"
-	"github.com/albertoteloko/gbt/validation"
-)
-
-const PROJECT_FILE = "gbt.json"
+import "github.com/albertoteloko/gbt/validation"
 
 type ProjectDefinition struct {
 	Name         string `json:"name"`
@@ -26,25 +20,14 @@ type Dependency struct {
 }
 
 type ProjectDefinitionLoader interface {
-	load() (ProjectDefinition, error)
+	Load() (ProjectDefinition, error)
 }
 
 type ProjectDefinitionLoaderFileSystem struct {
 }
 
-func (loader ProjectDefinitionLoaderFileSystem) load() (ProjectDefinition, error) {
-	var definition ProjectDefinition
-	var err error
 
-	file, err := ioutil.ReadFile(PROJECT_FILE)
-	if err == nil {
-		err = json.Unmarshal(file, &definition)
-
-	}
-	return definition, err
-}
-
-func (definition ProjectDefinition) validate() []error {
+func (definition ProjectDefinition) Validate() []error {
 	var validationErrors []error = []error{}
 
 	validationErrors = append(validationErrors, validation.ValidateString("Name", definition.Name)...)
