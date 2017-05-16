@@ -2,19 +2,19 @@ package main
 
 import (
 	"github.com/albertoteloko/gbt/log"
+	"github.com/albertoteloko/gbt/file"
 	"io/ioutil"
-	"os"
 	"os/exec"
 	"strings"
 )
 
 func cleanTask() {
-	os.RemoveAll(BIN_FOLDER)
-	os.MkdirAll(BIN_FOLDER, 0777)
+	//os.RemoveAll(BIN_FOLDER)
+	//os.MkdirAll(BIN_FOLDER, 0777)
 }
 
 func formatFolder(dir string) {
-	files, err := getFiles(dir, and(isGoFile, isGitHubPath))
+	files, err := file.GetFiles(dir, file.And(file.IsGoFile, file.IsGitHubPath))
 
 	if err != nil {
 		log.Error("Error during folder read: %s", err)
@@ -119,7 +119,7 @@ func isGoTestFolder(name string) bool {
 
 	for _, f := range files {
 		fileName := name + "/" + f.Name()
-		if !f.IsDir() && isGoTestFile(fileName) {
+		if !f.IsDir() && file.IsGoTestFile(fileName) {
 			return true
 		}
 	}
@@ -170,4 +170,8 @@ func benchmarkFolder(folder string) ([]benchmarkResult, error) {
 
 		return testOutputs, nil
 	}
+}
+
+func getFolderName(folder string) string {
+	return file.GetFolderName(GO_PATH+"/src/", folder)
 }

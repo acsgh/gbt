@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
+	"github.com/albertoteloko/gbt/validation"
 )
 
 const PROJECT_FILE = "gbt.json"
@@ -24,7 +25,14 @@ type Dependency struct {
 	Transitive bool `json:"transitive"`
 }
 
-func loadProjectDefinition() (ProjectDefinition, error) {
+type ProjectDefinitionLoader interface {
+	load() (ProjectDefinition, error)
+}
+
+type ProjectDefinitionLoaderFileSystem struct {
+}
+
+func (loader ProjectDefinitionLoaderFileSystem) load() (ProjectDefinition, error) {
 	var definition ProjectDefinition
 	var err error
 
@@ -36,15 +44,15 @@ func loadProjectDefinition() (ProjectDefinition, error) {
 	return definition, err
 }
 
-func validateDefinition(definition ProjectDefinition) []error {
+func (definition ProjectDefinition) validate() []error {
 	var validationErrors []error = []error{}
 
-	validationErrors = append(validationErrors, validateString("Name", definition.Name)...)
-	validationErrors = append(validationErrors, validateString("Version", definition.Version)...)
-	validationErrors = append(validationErrors, validateString("Go", definition.GoVersion)...)
-	validationErrors = append(validationErrors, validateNil("Dependencies", definition.Dependencies)...)
-	validationErrors = append(validationErrors, validateNil("Dependencies", definition.Dependencies.Dev)...)
-	validationErrors = append(validationErrors, validateNil("Dependencies", definition.Dependencies.Prod)...)
+	validationErrors = append(validationErrors, validation.ValidateString("Name", definition.Name)...)
+	validationErrors = append(validationErrors, validation.ValidateString("Version", definition.Version)...)
+	validationErrors = append(validationErrors, validation.ValidateString("Go", definition.GoVersion)...)
+	validationErrors = append(validationErrors, validation.ValidateNil("Dependencies", definition.Dependencies)...)
+	validationErrors = append(validationErrors, validation.ValidateNil("Dependencies", definition.Dependencies.Dev)...)
+	validationErrors = append(validationErrors, validation.ValidateNil("Dependencies", definition.Dependencies.Prod)...)
 
 	return validationErrors
 }

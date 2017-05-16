@@ -1,8 +1,8 @@
-package main
+package validation
 
 import "errors"
 
-func validateNil(name string, value interface{}) []error {
+func ValidateNil(name string, value interface{}) []error {
 	var result []error = []error{}
 
 	if value == nil {
@@ -12,8 +12,8 @@ func validateNil(name string, value interface{}) []error {
 	return result
 }
 
-func validateString(name string, value string) []error {
-	var result []error = validateNil(name, value)
+func ValidateString(name string, value string) []error {
+	var result []error = ValidateNil(name, value)
 
 	if len(result) == 0 && len(value) == 0 {
 		result = append(result, errors.New("Field "+name+" cannot be empty"))

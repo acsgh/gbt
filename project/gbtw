@@ -1,9 +1,6 @@
 #!/bin/bash
 
-SCRIPT=`realpath $0`
-SCRIPT_PATH=`dirname $SCRIPT`
-
-. "$SCRIPT_PATH/.gbt/gbt.properties"
+. .gbt/gbt.properties
 
 if [ -z $GBT_VERSION ]; then
     echo "GBT_VERSION is required in .gbt/gbt.properties"
@@ -18,13 +15,13 @@ fi
 
 echo "GBT $GBT_VERSION!"
 
-GBT_VERSION_FOLDER="$HOME/.gbt/$GBT_VERSION"
+GBT_VERSION_FOLDER="$HOME/.gbt/gbt/$GBT_VERSION"
 
 mkdir -p "$GBT_VERSION_FOLDER"
 
 GBT_BIN="$GBT_VERSION_FOLDER/gbt"
 
-if [ ! -f "$GBT_BIN" ] || [ "$GBT_FORCE_DOWNLOAD" == true ]; then
+if [ ! -f "$GBT_BIN" ] || [ "$GBT_FORCE_DOWNLOAD" == "true" ]; then
     if [[ $GBT_URL == http* ]];
     then
         echo "Downloading $GBT_URL"
