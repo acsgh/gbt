@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/albertoteloko/gbt/log"
 	"github.com/albertoteloko/gbt/file"
+	"github.com/albertoteloko/gbt/utils"
 	"io/ioutil"
 	"os/exec"
 	"strings"
@@ -74,11 +75,11 @@ func testTask(folder string) bool {
 	} else {
 		namesLength := 0
 		for _, result := range results {
-			namesLength = max(namesLength, len(result.name))
+			namesLength = utils.Max(namesLength, len(result.name))
 		}
 		for _, testResult := range results {
 			testCorrect = testCorrect && (testResult.result == "PASS")
-			log.Info("%s %s [%s]", fixWidth(testResult.name, namesLength+3), testResult.result, testResult.time)
+			log.Info("%s %s [%s]", utils.FixWidth(testResult.name, namesLength+3), testResult.result, testResult.time)
 		}
 		log.Info("Coverage: %s", coverage)
 	}
@@ -98,10 +99,10 @@ func testFolder(folder string) ([]testResult, string, error) {
 		coverage := "0.0%"
 		for _, line := range strings.Split(output, "\n") {
 			if strings.HasPrefix(line, "--- ") {
-				parts := strings.Split(replaceChars(replaceChars(line, "", " ", "---", ")"), "\t", ":", "("), "\t")
+				parts := strings.Split(utils.ReplaceChars(utils.ReplaceChars(line, "", " ", "---", ")"), "\t", ":", "("), "\t")
 				testOutputs = append(testOutputs, testResult{parts[1], parts[0], parts[2]})
 			} else if strings.HasPrefix(line, "coverage: ") {
-				coverage = replaceChars(line, "", "coverage: ", " of statements")
+				coverage = utils.ReplaceChars(line, "", "coverage: ", " of statements")
 			}
 
 		}
@@ -142,10 +143,10 @@ func benchmarkTask(folder string) {
 	} else {
 		namesLength := 0
 		for _, result := range results {
-			namesLength = max(namesLength, len(result.name))
+			namesLength = utils.Max(namesLength, len(result.name))
 		}
 		for _, result := range results {
-			log.Info("%s %s [%s]", fixWidth(result.name, namesLength+3), result.rate, result.times)
+			log.Info("%s %s [%s]", utils.FixWidth(result.name, namesLength+3), result.rate, result.times)
 		}
 	}
 }
@@ -163,7 +164,7 @@ func benchmarkFolder(folder string) ([]benchmarkResult, error) {
 
 		for _, line := range strings.Split(output, "\n") {
 			if strings.HasPrefix(line, "Benchmark") {
-				parts := strings.Split(replaceChars(line, "", " ", "---", ")"), "\t")
+				parts := strings.Split(utils.ReplaceChars(line, "", " ", "---", ")"), "\t")
 				testOutputs = append(testOutputs, benchmarkResult{parts[0], parts[1], parts[2]})
 			}
 		}

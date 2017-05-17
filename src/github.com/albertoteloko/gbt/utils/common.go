@@ -1,13 +1,11 @@
-package main
+package utils
 
 import (
 	"path/filepath"
 	"strings"
 )
 
-var recursive = true
-
-func replaceChars(input string, replaceBy string, values ...string) string {
+func ReplaceChars(input string, replaceBy string, values ...string) string {
 	result := input
 
 	for _, value := range values {
@@ -17,7 +15,7 @@ func replaceChars(input string, replaceBy string, values ...string) string {
 	return result
 }
 
-func max(v1, v2 int) int {
+func Max(v1, v2 int) int {
 	if v1 >= v2 {
 		return v1
 	} else {
@@ -25,7 +23,7 @@ func max(v1, v2 int) int {
 	}
 }
 
-func fixWidth(value string, width int) string {
+func FixWidth(value string, width int) string {
 	result := value
 
 	for len(result) < width {
@@ -36,7 +34,7 @@ func fixWidth(value string, width int) string {
 }
 
 
-func getBaseDir() string {
+func GetBaseDir() string {
 	path, _ := filepath.Abs(filepath.Dir("."))
 	return path
 }
