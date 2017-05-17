@@ -9,8 +9,7 @@ import (
 )
 
 func DownloadUrl(url string, output string) error {
-	var err error
-	log.LogTime("Downloaded: "+url, func() {
+	return log.LogTimeWithError("Downloaded: "+url, func() error {
 		response, err := http.Get(url)
 
 		if err == nil {
@@ -19,19 +18,18 @@ func DownloadUrl(url string, output string) error {
 				file, err := os.Create(output)
 				defer file.Close()
 
-				readerpt := &progressReader{Reader: response.Body, length: response.ContentLength}
+				reader := &progressReader{Reader: response.Body, length: response.ContentLength}
 
 				if err == nil {
-					_, err = io.Copy(file, readerpt)
+					_, err = io.Copy(file, reader)
 					log.Debug("Downloaded %v/%v (%.2f %%)", response.ContentLength, response.ContentLength, float64(100))
 				}
 			} else if response.StatusCode == 404 {
 				err = errors.New(response.Status)
 			}
 		}
+		return err
 	})
-
-	return err
 }
 
 type progressReader struct {

@@ -10,3 +10,11 @@ func LogTime(taskName string, task func()) {
 	task()
 	Info("%s in %d ms", taskName, (time.Now().UnixNano()-startTime)/1000000)
 }
+
+func LogTimeWithError(taskName string, task func() error) error {
+	startTime := time.Now().UnixNano()
+	Debug("%s start", taskName)
+	err := task()
+	Info("%s in %d ms", taskName, (time.Now().UnixNano()-startTime)/1000000)
+	return err
+}

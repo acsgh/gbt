@@ -4,6 +4,7 @@ import (
 	"github.com/albertoteloko/gbt/log"
 	"github.com/albertoteloko/gbt/file"
 	pd "github.com/albertoteloko/gbt/project-definition"
+	"errors"
 )
 
 const GO_URL_BASE = "https://storage.googleapis.com/golang"
@@ -16,7 +17,7 @@ type GoInterfaceFileSystem struct {
 }
 
 func (goInterface GoInterfaceFileSystem) CheckAndDownloadGo(projectDefinition pd.ProjectDefinition) error {
-	var goFolder = file.HOME_PATH + "/.gbt/go/" + projectDefinition.Version
+	var goFolder = file.HOME_PATH + "/.gbt/go/" + projectDefinition.GoVersion
 	log.Debug("Go Folder: %v", goFolder)
 
 	var err = testGoInstallation(goFolder)
@@ -25,7 +26,6 @@ func (goInterface GoInterfaceFileSystem) CheckAndDownloadGo(projectDefinition pd
 		log.Warn("Invalid GO installation, downloading")
 
 		err = downloadGoInstallation(projectDefinition.GoVersion, goFolder)
-
 		if err == nil {
 			err = testGoInstallation(goFolder)
 		}
@@ -35,9 +35,16 @@ func (goInterface GoInterfaceFileSystem) CheckAndDownloadGo(projectDefinition pd
 }
 
 func downloadGoInstallation(goVersion string, goFolder string) error {
-	var goUrl = getGoUrl(goVersion)
+	goUrl := getGoUrl(goVersion)
 	log.Info(goUrl)
-	return file.DownloadUrl(goUrl, file.TMP_PATH+"/"+getGoFile(goVersion))
+	zipFile := file.TMP_PATH + "/" + getGoFile(goVersion)
+	err := file.DownloadUrl(goUrl, zipFile)
+
+	if err == nil{
+		err = file.UnTarGz(zipFile, goFolder)
+	}
+
+	return err
 }
 
 func getGoUrl(goVersion string) string {
@@ -55,6 +62,7 @@ func testGoInstallation(goFolder string) error {
 	var exist, _ = file.ExistsFile(goExec)
 
 	if (err == nil) && (exist) {
+		err = errors.New("Not implemented yet")
 	}
 
 	return err
