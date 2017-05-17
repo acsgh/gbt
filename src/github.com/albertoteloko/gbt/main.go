@@ -32,27 +32,27 @@ func main() {
 		log.Level(log.INFO)
 	}
 
-	log.Debug("GUT %s", version)
-	initTool()
+	log.LogTime("GBT " + version, func() {
+		initTool()
 
-	var definition, err = projectDefinitionLoader.Load()
+		var definition, err = projectDefinitionLoader.Load()
 
-	if err != nil {
-		log.Error("Unable to load project definition: %v", err)
-	} else {
-		var validationErrors = definition.Validate()
-
-		if len(validationErrors) > 0 {
-			log.Error("There are %v validation error in gbt.json", len(validationErrors))
-			for _, validationError := range validationErrors {
-				log.Error("\t* %v", validationError)
-			}
+		if err != nil {
+			log.Error("Unable to load project definition: %v", err)
 		} else {
-			run(definition)
+			var validationErrors = definition.Validate()
+
+			if len(validationErrors) > 0 {
+				log.Error("There are %v validation error in gbt.json", len(validationErrors))
+				for _, validationError := range validationErrors {
+					log.Error("\t* %v", validationError)
+				}
+			} else {
+				run(definition)
+			}
+
 		}
-
-	}
-
+	})
 	//tasks := flag.Args()
 
 	//dir := getBaseDir()
@@ -103,7 +103,7 @@ func loadFlags() {
 }
 
 func run(definition pd.ProjectDefinition) {
-	log.Info("%v %v", definition.Name, definition.Version)
+	log.Info("Project: %v %v", definition.Name, definition.Version)
 	var err = goInterface.CheckAndDownloadGo(definition)
 	if err != nil {
 		log.Error("Unable to load go version: %v", err)

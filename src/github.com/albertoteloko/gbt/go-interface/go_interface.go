@@ -40,7 +40,6 @@ func (goInterface GoInterfaceFileSystem) CheckAndDownloadGo(projectDefinition pd
 
 func downloadGoInstallation(goVersion string, goFolder string) error {
 	goUrl := getGoUrl(goVersion)
-	log.Info(goUrl)
 	zipFile := file.TMP_PATH + "/" + getGoFile(goVersion)
 	err := file.DownloadUrl(goUrl, zipFile)
 
