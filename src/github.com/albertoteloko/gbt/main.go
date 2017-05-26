@@ -84,6 +84,8 @@ func run(definition pd.ProjectDefinition) {
 	if err != nil {
 		log.Error("Unable to load go version: %v", err)
 	}
+
+
 }
 //
 //func processFolder(folder string) {
