@@ -82,7 +82,7 @@ func IsGoMainFolder(name string) bool {
 func IsGoMainFile(name string) bool {
 	b, err := ioutil.ReadFile(name)
 	if err != nil {
-		log.Error("Unable to read file %s: %s", name, err)
+		log.Errorf("Unable to read file %s: %s", name, err)
 		return false
 	}
 

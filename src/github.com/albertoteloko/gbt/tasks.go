@@ -7,26 +7,70 @@ import (
 	"io/ioutil"
 	"os/exec"
 	"strings"
+	pd "github.com/albertoteloko/gbt/project-definition"
 )
 
-func cleanTask() {
+type Tasks [] Task
+
+
+type Task struct {
+	Name         string
+	Dependencies []string
+	priority     uint
+	run       func(pd.ProjectDefinition) error
+}
+
+
+type TaskCmd struct {
+	Name         string
+	Dependencies []string
+	priority     uint
+	cmd          string
+}
+
+var tasks Tasks = Tasks{
+	Task{"clean", []string{}, 0, clean},
+}
+
+func (this Tasks) findTasks(args Args, pd pd.ProjectDefinition) (Tasks, error) {
+	return this, nil
+}
+
+func (this Tasks) run(definition pd.ProjectDefinition) error {
+	var err error
+	for _, task := range this {
+		err = log.LogTimeWithError("Task " + task.Name, func() error {
+			return task.run(definition)
+		})
+
+		if err != nil {
+			log.Errorf("Error in task %v: %v", task.Name, err)
+			break
+		}
+	}
+	return err
+}
+
+func clean(pd pd.ProjectDefinition) error {
 	//os.RemoveAll(BIN_FOLDER)
 	//os.MkdirAll(BIN_FOLDER, 0777)
+
+	return nil
 }
 
 func formatFolder(dir string) {
 	files, err := file.GetFiles(dir, file.And(file.IsGoFile, file.IsGitHubPath))
 
 	if err != nil {
-		log.Error("Error during folder read: %s", err)
+		log.Errorf("Errorf during folder read: %s", err)
 	}
 
 	for _, f := range files {
-		log.Debug("Formating file: %s", f)
+		log.Debugf("Formating file: %s", f)
 		if err := formatFile(f); err != nil {
-			log.Error("Error formating file %s, %s", f, err)
+			log.Errorf("Errorf formating file %s, %s", f, err)
 		} else {
-			log.Debug("Formated file: %s", f)
+			log.Debugf("Formated file: %s", f)
 		}
 	}
 }
@@ -39,7 +83,7 @@ func buildTask(folder string) bool {
 	_, err := buildFolder(getFolderName(folder))
 
 	if err != nil {
-		log.Error("Error during folder building: %s", err)
+		log.Errorf("Errorf during folder building: %s", err)
 	}
 	return (err == nil)
 }
@@ -71,7 +115,7 @@ func testTask(folder string) bool {
 	results, coverage, err := testFolder(folderName)
 
 	if err != nil {
-		log.Error("Error during folder testing: %s", err)
+		log.Errorf("Errorf during folder testing: %s", err)
 	} else {
 		namesLength := 0
 		for _, result := range results {
@@ -79,9 +123,9 @@ func testTask(folder string) bool {
 		}
 		for _, testResult := range results {
 			testCorrect = testCorrect && (testResult.result == "PASS")
-			log.Info("%s %s [%s]", utils.FixWidth(testResult.name, namesLength+3), testResult.result, testResult.time)
+			log.Infof("%s %s [%s]", utils.FixWidth(testResult.name, namesLength+3), testResult.result, testResult.time)
 		}
-		log.Info("Coverage: %s", coverage)
+		log.Infof("Coverage: %s", coverage)
 	}
 	return testCorrect
 }
@@ -139,14 +183,14 @@ func benchmarkTask(folder string) {
 	results, err := benchmarkFolder(folderName)
 
 	if err != nil {
-		log.Error("Error during folder benchmarking: %s", err)
+		log.Errorf("Errorf during folder benchmarking: %s", err)
 	} else {
 		namesLength := 0
 		for _, result := range results {
 			namesLength = utils.Max(namesLength, len(result.name))
 		}
 		for _, result := range results {
-			log.Info("%s %s [%s]", utils.FixWidth(result.name, namesLength+3), result.rate, result.times)
+			log.Infof("%s %s [%s]", utils.FixWidth(result.name, namesLength+3), result.rate, result.times)
 		}
 	}
 }

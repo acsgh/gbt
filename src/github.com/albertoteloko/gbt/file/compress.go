@@ -77,7 +77,7 @@ func UnTarGz(zipFileUrl, baseFolder string) error {
 func extractTarEntry(baseFolder string, header *tar.Header, tarReader *tar.Reader) error {
 	path := filepath.Join(baseFolder, header.Name)
 
-	log.Debug("Extracting %v", path)
+	log.Debugf("Extracting %v", path)
 
 	switch header.Typeflag {
 	case tar.TypeReg:

@@ -22,31 +22,31 @@ var stdout = os.Stdout
 var stderr = os.Stderr
 var thresholdLevel = TRACE
 
-func Trace(format string, v ...interface{}) {
-	Log(TRACE, format, v...)
+func Tracef(format string, v ...interface{}) {
+	Logf(TRACE, format, v...)
 }
 
-func Debug(format string, v ...interface{}) {
-	Log(DEBUG, format, v...)
+func Debugf(format string, v ...interface{}) {
+	Logf(DEBUG, format, v...)
 }
 
-func Info(format string, v ...interface{}) {
-	Log(INFO, format, v...)
+func Infof(format string, v ...interface{}) {
+	Logf(INFO, format, v...)
 }
 
-func Warn(format string, v ...interface{}) {
-	Log(WARN, format, v...)
+func Warnf(format string, v ...interface{}) {
+	Logf(WARN, format, v...)
 }
 
-func Error(format string, v ...interface{}) {
-	Log(ERROR, format, v...)
+func Errorf(format string, v ...interface{}) {
+	Logf(ERROR, format, v...)
 }
 
-func Fatal(format string, v ...interface{}) {
-	Log(FATAL, format, v...)
+func Fatalf(format string, v ...interface{}) {
+	Logf(FATAL, format, v...)
 }
 
-func Log(level LogLevel, format string, v ...interface{}) {
+func Logf(level LogLevel, format string, v ...interface{}) {
 	writer := ioutil.Discard
 	if (level >= thresholdLevel) {
 		if (level == FATAL) {

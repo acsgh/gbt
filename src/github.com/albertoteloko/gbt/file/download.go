@@ -22,7 +22,7 @@ func DownloadUrl(url string, output string) error {
 
 				if err == nil {
 					_, err = io.Copy(file, reader)
-					log.Debug("Downloaded %v/%v (%.2f %%)", response.ContentLength, response.ContentLength, float64(100))
+					log.Debugf("Downloaded %v/%v (%.2f %%)", response.ContentLength, response.ContentLength, float64(100))
 				}
 			} else if response.StatusCode == 404 {
 				err = errors.New(response.Status)
@@ -46,7 +46,7 @@ func (pt *progressReader) Read(p []byte) (int, error) {
 		percentage := float64(pt.total) / float64(pt.length) * float64(100)
 
 		if percentage-pt.lastPercentageShow >= 5 {
-			log.Debug("Downloaded %v/%v (%.2f %%)", pt.total, pt.length, percentage)
+			log.Debugf("Downloaded %v/%v (%.2f %%)", pt.total, pt.length, percentage)
 			pt.lastPercentageShow = percentage
 		}
 	}

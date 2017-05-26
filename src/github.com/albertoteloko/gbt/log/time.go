@@ -6,15 +6,15 @@ import (
 
 func LogTime(taskName string, task func()) {
 	startTime := time.Now().UnixNano()
-	Debug("%s start", taskName)
+	Debugf("%s start", taskName)
 	task()
-	Info("%s in %d ms", taskName, (time.Now().UnixNano()-startTime)/1000000)
+	Infof("%s in %d ms", taskName, (time.Now().UnixNano()-startTime)/1000000)
 }
 
 func LogTimeWithError(taskName string, task func() error) error {
 	startTime := time.Now().UnixNano()
-	Debug("%s start", taskName)
+	Debugf("%s start", taskName)
 	err := task()
-	Info("%s in %d ms", taskName, (time.Now().UnixNano()-startTime)/1000000)
+	Infof("%s in %d ms", taskName, (time.Now().UnixNano()-startTime)/1000000)
 	return err
 }

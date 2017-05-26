@@ -12,7 +12,7 @@ func printHelp() {
 	fmt.Printf("GBT %v\n\n", version)
 	fmt.Printf("Usage: gbt [flags] [tasks]\n")
 	fmt.Printf("\tFlags:\n")
-	fmt.Printf("\t\t-d - Debug the output\n")
+	fmt.Printf("\t\t-d - Debugf the output\n")
 	fmt.Printf("\tTasks:\n")
 	fmt.Printf("\t\tName\t\t\tDependencies\t\tOrder\n")
 	fmt.Printf("\t\tclean\t\t\t[]\t\t\t0\n")

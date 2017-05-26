@@ -16,7 +16,7 @@ var projectDefinitionLoader pd.ProjectDefinitionLoader = pd.ProjectDefinitionLoa
 func main() {
 	configureLogs()
 
-	if isHelp(){
+	if isHelp() {
 		printHelp()
 		os.Exit(1)
 	}
@@ -27,14 +27,14 @@ func main() {
 		var definition, err = projectDefinitionLoader.Load()
 
 		if err != nil {
-			log.Error("Unable to load project definition: %v", err)
+			log.Errorf("Unable to load project definition: %v", err)
 		} else {
 			var validationErrors = definition.Validate()
 
 			if len(validationErrors) > 0 {
-				log.Error("There are %v validation error in gbt.json", len(validationErrors))
+				log.Errorf("There are %v validation error in gbt.json", len(validationErrors))
 				for _, validationError := range validationErrors {
-					log.Error("\t* %v", validationError)
+					log.Errorf("\t* %v", validationError)
 				}
 			} else {
 				run(definition)
@@ -45,13 +45,13 @@ func main() {
 	//tasks := flag.Args()
 
 	//dir := getBaseDir()
-	//log.Debug("Base Dir: %s", dir)
+	//log.Debugf("Base Dir: %s", dir)
 	//
 	//log.LogTime("All Tasks", func() {
 	//	folders, err := getFolders(dir, isGoFolder)
 	//
 	//	if err != nil {
-	//		log.Error("Error during folder exploration: %s", err)
+	//		log.Errorf("Errorf during folder exploration: %s", err)
 	//		return
 	//	}
 	//
@@ -79,14 +79,28 @@ func initTool() {
 }
 
 func run(definition pd.ProjectDefinition) {
-	log.Info("Project: %v %v", definition.Name, definition.Version)
+	log.Infof("Project: %v %v", definition.Name, definition.Version)
 	var err = goInterface.CheckAndDownloadGo(definition)
 	if err != nil {
-		log.Error("Unable to load go version: %v", err)
+		log.Errorf("Unable to load go version: %v", err)
+	} else {
+		targetTasks, err := tasks.findTasks(args, definition)
+
+		if err != nil {
+			log.Errorf("Task error: %v", err)
+		} else {
+			log.Debugf("Tasks: %v", targetTasks)
+			err = targetTasks.run(definition)
+
+			if err != nil {
+				os.Exit(2)
+			}
+		}
+
 	}
 
-
 }
+
 //
 //func processFolder(folder string) {
 //	folderName := getFolderName(folder)
@@ -119,9 +133,9 @@ func run(definition pd.ProjectDefinition) {
 //				})
 //			}
 //		} else {
-//			log.Fatal("Tests fails")
+//			log.Fatalf("Tests fails")
 //		}
 //	} else {
-//		log.Fatal("Build fails")
+//		log.Fatalf("Build fails")
 //	}
 //}

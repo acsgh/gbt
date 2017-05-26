@@ -22,12 +22,12 @@ type GoInterfaceFileSystem struct {
 
 func (goInterface GoInterfaceFileSystem) CheckAndDownloadGo(projectDefinition pd.ProjectDefinition) error {
 	var goFolder = file.HOME_PATH + "/.gbt/go/" + projectDefinition.GoVersion
-	log.Debug("Go Folder: %v", goFolder)
+	log.Debugf("Go Folder: %v", goFolder)
 
 	var err = testGoInstallation(goFolder, projectDefinition.GoVersion)
 
 	if err != nil {
-		log.Warn("Invalid GO installation, downloading")
+		log.Warnf("Invalid GO installation, downloading")
 
 		err = downloadGoInstallation(projectDefinition.GoVersion, goFolder)
 		if err != nil {
@@ -82,8 +82,8 @@ func testGoInstallation(goFolder string, goVersion string) error {
 
 		output = utils.ReplaceChars(output, "", "\r", "\n", "go", "version", "   ", "  ")
 
-		log.Debug("Version: %v", output)
-		log.Debug("Go Version: %v", goVersion)
+		log.Debugf("Version: %v", output)
+		log.Debugf("Go Version: %v", goVersion)
 
 		if !strings.Contains(output, goVersion) {
 			return errors.New("GO folder version does not match with the expected: " + goVersion)
