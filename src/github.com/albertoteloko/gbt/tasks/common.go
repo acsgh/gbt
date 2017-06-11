@@ -1,4 +1,4 @@
-package main
+package tasks
 
 import (
 	"github.com/albertoteloko/gbt/log"
@@ -7,85 +7,15 @@ import (
 	"io/ioutil"
 	"os/exec"
 	"strings"
-	pd "github.com/albertoteloko/gbt/project-definition"
 )
-
-type Tasks [] Task
-
-
-type Task struct {
-	Name         string
-	Dependencies []string
-	priority     uint
-	run       func(pd.ProjectDefinition) error
-}
-
-
-type TaskCmd struct {
-	Name         string
-	Dependencies []string
-	priority     uint
-	cmd          string
-}
-
-var tasks Tasks = Tasks{
-	Task{"clean", []string{}, 0, clean},
-}
-
-func (this Tasks) findTasks(args Args, pd pd.ProjectDefinition) (Tasks, error) {
-	return this, nil
-}
-
-func (this Tasks) run(definition pd.ProjectDefinition) error {
-	var err error
-	for _, task := range this {
-		err = log.LogTimeWithError("Task " + task.Name, func() error {
-			return task.run(definition)
-		})
-
-		if err != nil {
-			log.Errorf("Error in task %v: %v", task.Name, err)
-			break
-		}
-	}
-	return err
-}
-
-func clean(pd pd.ProjectDefinition) error {
-	//os.RemoveAll(BIN_FOLDER)
-	//os.MkdirAll(BIN_FOLDER, 0777)
-
-	return nil
-}
-
-func formatFolder(dir string) {
-	files, err := file.GetFiles(dir, file.And(file.IsGoFile, file.IsGitHubPath))
-
-	if err != nil {
-		log.Errorf("Errorf during folder read: %s", err)
-	}
-
-	for _, f := range files {
-		log.Debugf("Formating file: %s", f)
-		if err := formatFile(f); err != nil {
-			log.Errorf("Errorf formating file %s, %s", f, err)
-		} else {
-			log.Debugf("Formated file: %s", f)
-		}
-	}
-}
-
-func formatFile(file string) error {
-	return exec.Command("gofmt", "-w", file).Run()
-}
 
 func buildTask(folder string) bool {
 	_, err := buildFolder(getFolderName(folder))
 
 	if err != nil {
-		log.Errorf("Errorf during folder building: %s", err)
+		log.Errorf("Error during folder building: %s", err)
 	}
-	return (err == nil)
+	return err == nil
 }
 
 func buildFolder(folder string) (string, error) {
@@ -115,7 +45,7 @@ func testTask(folder string) bool {
 	results, coverage, err := testFolder(folderName)
 
 	if err != nil {
-		log.Errorf("Errorf during folder testing: %s", err)
+		log.Errorf("Error during folder testing: %s", err)
 	} else {
 		namesLength := 0
 		for _, result := range results {
@@ -183,7 +113,7 @@ func benchmarkTask(folder string) {
 	results, err := benchmarkFolder(folderName)
 
 	if err != nil {
-		log.Errorf("Errorf during folder benchmarking: %s", err)
+		log.Errorf("Error during folder benchmarking: %s", err)
 	} else {
 		namesLength := 0
 		for _, result := range results {

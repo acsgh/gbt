@@ -33,7 +33,6 @@ func FixWidth(value string, width int) string {
 	return result
 }
 
-
 func GetBaseDir() string {
 	path, _ := filepath.Abs(filepath.Dir("."))
 	return path

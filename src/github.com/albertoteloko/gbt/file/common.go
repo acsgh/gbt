@@ -14,6 +14,8 @@ var (
 	GBT_DISTROS_PATH  = GBT_PATH + "/gbt"
 	DEPENDENCIES_PATH = GBT_PATH + "/dep"
 	TMP_PATH          = GBT_PATH + "/tmp"
+	BUILD_PATH        = "build"
+	SRC_PATH          = "src"
 	GO_PATH           = os.Getenv("GOPATH")
 )
 

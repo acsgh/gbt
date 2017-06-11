@@ -6,6 +6,7 @@ import (
 	"os"
 	pd "github.com/albertoteloko/gbt/project-definition"
 	gi "github.com/albertoteloko/gbt/go-interface"
+	"github.com/albertoteloko/gbt/tasks"
 )
 
 var version string
@@ -51,7 +52,7 @@ func main() {
 	//	folders, err := getFolders(dir, isGoFolder)
 	//
 	//	if err != nil {
-	//		log.Errorf("Errorf during folder exploration: %s", err)
+	//		log.Errorf("Error during folder exploration: %s", err)
 	//		return
 	//	}
 	//
@@ -84,21 +85,21 @@ func run(definition pd.ProjectDefinition) {
 	if err != nil {
 		log.Errorf("Unable to load go version: %v", err)
 	} else {
-		targetTasks, err := tasks.findTasks(args, definition)
+		targetTasks, err := tasks.FindTasks(args, definition)
 
 		if err != nil {
 			log.Errorf("Task error: %v", err)
+		} else if len(targetTasks) == 0 {
+			log.Warnf("No task found")
 		} else {
-			log.Debugf("Tasks: %v", targetTasks)
-			err = targetTasks.run(definition)
+			log.Tracef("Tasks: %v", targetTasks)
+			err = targetTasks.Run(definition)
 
 			if err != nil {
 				os.Exit(2)
 			}
 		}
-
 	}
-
 }
 
 //
